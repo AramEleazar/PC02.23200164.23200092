@@ -5,7 +5,7 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/IndexPage.vue') },
       { path: 'nuevoregistro', component: () => import('src/components/auth/RegisterForm.vue') },
-      { path: 'products', component: () => import('pages/ProductPage.vue') },
+      { path: 'digimons', component: () => import('pages/ProductPage.vue') },
     ],
   },
   {

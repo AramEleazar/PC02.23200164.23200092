@@ -1,8 +1,8 @@
 {
-  "name": "ecommerce-frontend",
+  "name": "digimon-explorer",
   "version": "0.0.1",
-  "description": "A Quasar Project",
-  "productName": "Ecommerce App",
+  "description": "Explora Digimons desde la API pública",
+  "productName": "Digimon Explorer",
   "author": "Luis Chang <luis.chang@outlook.com>",
   "type": "module",
   "private": true,

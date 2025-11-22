@@ -1,163 +1,41 @@
 <template>
-  <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
-  <form>
-    <h3>Ecommerce App</h3>
+  <div class="login-page q-pa-md q-flex q-justify-center q-items-center">
+    <q-card class="login-card q-pa-lg" flat bordered>
+      <div class="brand q-mb-md">
+        <img src="/icons/favicon-96x96.png" alt="logo" />
+        <div class="title">Digimon Explorer</div>
+        <div class="subtitle">Inicia sesión para explorar Digimons</div>
+      </div>
 
-    <label for="username">Email</label>
-    <input type="text" placeholder="example@peru.com" id="username" v-model="email">
+      <q-form @submit.prevent="login">
+        <q-input filled v-model="email" label="Correo electrónico" type="email" dense autofocus />
+        <q-input filled v-model="password" label="Contraseña" type="password" dense class="q-mt-sm" />
 
-    <label for="password">Password</label>
-    <input type="password" placeholder="Password" id="password" v-model="password">
+        <div class="q-mt-md q-mb-sm">
+          <q-btn type="submit" label="Iniciar sesión" color="primary" unelevated class="full-width" />
+        </div>
 
-    <button @click="login">Log In</button>
-    <div class="social">
-      <div class="go"><i class="fab fa-google"></i> Google</div>
-      <div class="fb"><i class="fab fa-facebook"></i> Facebook</div>
-    </div>
-  </form>
+        <div class="q-mt-sm q-gutter-sm row items-center">
+          <div class="col">
+            <q-btn flat icon="google" label="Google" />
+          </div>
+          <div class="col">
+            <q-btn flat icon="facebook" label="Facebook" />
+          </div>
+        </div>
+
+        <div class="q-mt-md text-center">
+          <router-link to="/register">¿No tienes cuenta? Regístrate</router-link>
+        </div>
+      </q-form>
+    </q-card>
+  </div>
 </template>
-<style>
-*,
-*:before,
-*:after {
-  padding: 0;
-  margin: 0;
-  box-sizing: border-box;
-}
-
-body {
-  background-color: #080710;
-}
-
-.background {
-  width: 430px;
-  height: 520px;
-  position: absolute;
-  transform: translate(-50%, -50%);
-  left: 50%;
-  top: 50%;
-}
-
-.background .shape {
-  height: 200px;
-  width: 200px;
-  position: absolute;
-  border-radius: 50%;
-}
-
-.shape:first-child {
-  background: linear-gradient(#1845ad,
-      #23a2f6);
-  left: -80px;
-  top: -80px;
-}
-
-.shape:last-child {
-  background: linear-gradient(to right,
-      #ff512f,
-      #f09819);
-  right: -30px;
-  bottom: -80px;
-}
-
-form {
-  height: 520px;
-  width: 400px;
-  background-color: rgba(255, 255, 255, 0.13);
-  position: absolute;
-  transform: translate(-50%, -50%);
-  top: 50%;
-  left: 50%;
-  border-radius: 10px;
-  backdrop-filter: blur(10px);
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
-  padding: 50px 35px;
-}
-
-form * {
-  font-family: 'Poppins', sans-serif;
-  color: #ffffff;
-  letter-spacing: 0.5px;
-  outline: none;
-  border: none;
-}
-
-form h3 {
-  font-size: 32px;
-  font-weight: 500;
-  line-height: 42px;
-  text-align: center;
-}
-
-label {
-  display: block;
-  margin-top: 30px;
-  font-size: 16px;
-  font-weight: 500;
-}
-
-input {
-  display: block;
-  height: 50px;
-  width: 100%;
-  background-color: rgba(255, 255, 255, 0.07);
-  border-radius: 3px;
-  padding: 0 10px;
-  margin-top: 8px;
-  font-size: 14px;
-  font-weight: 300;
-}
-
-::placeholder {
-  color: #e5e5e5;
-}
-
-button {
-  margin-top: 50px;
-  width: 100%;
-  background-color: #ffffff;
-  color: #080710;
-  padding: 15px 0;
-  font-size: 18px;
-  font-weight: 600;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.social {
-  margin-top: 30px;
-  display: flex;
-}
-
-.social div {
-  background: red;
-  width: 150px;
-  border-radius: 3px;
-  padding: 5px 10px 10px 5px;
-  background-color: rgba(255, 255, 255, 0.27);
-  color: #eaf0fb;
-  text-align: center;
-}
-
-.social div:hover {
-  background-color: rgba(255, 255, 255, 0.47);
-}
-
-.social .fb {
-  margin-left: 25px;
-}
-
-.social i {
-  margin-right: 4px;
-}
-</style>
 
 <script>
+import axios from 'axios';
 export default {
-  name: "LoginForm",
+  name: 'LoginForm',
   data() {
     return {
       email: '',
@@ -165,27 +43,65 @@ export default {
     }
   },
   methods: {
-    login() {
-      console.log("El correo es: " + this.email)
-      let endpointURL = "/api/user/signin"
-      let userData = {
-        email: this.email,
-        password: this.password
+    async login () {
+      // Basic validation
+      if (!this.email || !this.password) {
+        this.$q.notify({ type: 'negative', message: 'Ingresa correo y contraseña' })
+        return
       }
-      this.$api.post(endpointURL, userData).then((response) => {
-        console.log("Inicio de sesión: " + JSON.stringify(response))
-        localStorage.setItem("token", JSON.stringify(response.data.token))
-        this.$router.push('/products')
-      }).catch((error) => {
-        //console.log("Ocurrió un error: " + error)
-        this.$q.notify({
-          type: 'negative',
-          message: "Ocurrió un error: " + error,
-          position: 'bottom'
-        })
-      })
 
+      try {
+        const payload = { email: this.email, password: this.password }
+        const res = await axios.post('https://storedb-api.onrender.com/node-api/users/signin', payload, {
+          headers: { 'Content-Type': 'application/json', 'accept': '*/*' }
+        })
+
+        // Expect token in response.data.token or response.data
+        const token = res.data && (res.data.token || res.data.accessToken || res.data)
+        if (!token) {
+          throw new Error('Token no encontrado en la respuesta')
+        }
+
+        // Store token
+        localStorage.setItem('token', typeof token === 'string' ? token : JSON.stringify(token))
+
+        this.$q.notify({ type: 'positive', message: 'Inicio de sesión exitoso' })
+        this.$router.push('/digimons')
+      } catch (err) {
+        console.error('Login error', err)
+        const msg = err.response && err.response.data && err.response.data.message
+          ? err.response.data.message
+          : err.message || 'Error al iniciar sesión'
+        this.$q.notify({ type: 'negative', message: msg })
+      }
     }
   }
 }
 </script>
+
+<style scoped>
+.login-page {
+  min-height: calc(100vh - 56px);
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+}
+.login-card {
+  width: 380px;
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(6px);
+  color: #fff;
+}
+.brand {
+  text-align: center;
+}
+.brand img { height: 64px; }
+.title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-top: 8px;
+}
+.subtitle {
+  font-size: 12px;
+  color: #cbd5e1;
+}
+.full-width { width: 100%; }
+</style>

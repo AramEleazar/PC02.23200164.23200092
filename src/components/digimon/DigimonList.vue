@@ -15,6 +15,18 @@
   </div>
 </template>
 
+<script>
+export default {
+  name: 'DigimonList',
+  props: {
+    digimons: {
+      type: Array,
+      default: () => []
+    }
+  }
+}
+</script>
+
 <style scoped>
 .cards {
   display: flex;
@@ -40,15 +52,3 @@
   color: #666;
 }
 </style>
-
-<script>
-export default {
-  name: 'ProductList',
-  props: {
-    digimons: {
-      type: Array,
-      default: () => []
-    }
-  }
-}
-</script>
